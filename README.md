@@ -13,7 +13,7 @@ See the file named `arithmetic.h`.
 
 Implements the Boldo-Daumas-Li exact argument reduction algorithm.[^3]
 
-See the file named `reduce.h`.
+See the files named `reduce.h` and [`test-reduce.txt`](test-reduce.txt).
 
 
 # Requirements
