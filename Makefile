@@ -3,6 +3,7 @@ CXX=		clang++
 LD=			$(CC)
 
 CPPFLAGS+=	-I.
+CPPFLAGS+=	-D_XOPEN_SOURCE=600 # drand48
 ifeq ("$(DEBUG)","0")
 CPPFLAGS+=	-DNDEBUG
 endif
@@ -41,13 +42,24 @@ LDFLAGS+=	$(shell pkg-config --libs mpfr)
 LDFLAGS+=	-rpath $(shell pkg-config --variable=prefix mpfr)
 endif
 
+LDFLAGS+=	-lm
+
 %.s: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -O2 -S $< -o $@
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -O2 -c $< -o $@
 
+reduce.h: arithmetic.h constants.h types.h
+reduce.c: reduce.h types.h
+test-reduce.c: common.h reduce.h types.h
+
+test-reduce: test-reduce.c reduce.o
+	$(CC) $(CPPFLAGS) -UNDEBUG $(CFLAGS) -O0 -c test-reduce.c -o test-reduce.o
+	$(LD) reduce.o test-reduce.o -o test-reduce $(LDFLAGS)
+
 .PHONY: clean
 clean:
 	rm -f *.s
 	rm -f *.o
+	rm -f test-reduce
