@@ -1,6 +1,9 @@
-CC=			clang
-CXX=		clang++
+CC?=		clang
+CXX?=		clang++
 LD=			$(CC)
+
+CLANG:=		$(shell $(CC) --version 2>/dev/null | grep -q clang && echo yes)
+GCC:=		$(shell $(CC) --version 2>/dev/null | grep -q gcc && echo yes)
 
 CPPFLAGS+=	-I.
 CPPFLAGS+=	-D_XOPEN_SOURCE=600 # drand48
@@ -11,8 +14,11 @@ endif
 CFLAGS+=	-march=native
 CFLAGS+=	-mtune=generic
 
-# CFLAGS+=	-Wall -Wextra
+ifeq ("$(CLANG)","yes")
 CFLAGS+=	-Weverything
+else
+CFLAGS+=	-Wall -Wextra
+endif
 CFLAGS+=	-Wno-declaration-after-statement
 CFLAGS+=	-pedantic
 
@@ -21,9 +27,16 @@ CFLAGS+=	-fno-omit-frame-pointer
 CFLAGS+=	-g
 
 CFLAGS+=	-fno-fast-math # no cheating
+ifeq ("$(CLANG)","yes")
 CFLAGS+=	-fvectorize
 CFLAGS+=	-Rpass=loop-vectorize
 CFLAGS+=	-Rpass-analysis=loop-vectorize
+endif
+ifeq ("$(GCC)","yes")
+CFLAGS+=	-ftree-vectorize
+CFLAGS+=	-fopt-info-vec-optimized
+CFLAGS+=	-fopt-info-vec-missed
+endif
 
 CFLAGS+=	-std=c11
 
@@ -39,7 +52,7 @@ $(error "need pkg-config to find mpfr")
 else
 CPPFLAGS+=	$(shell pkg-config --cflags mpfr)
 LDFLAGS+=	$(shell pkg-config --libs mpfr)
-LDFLAGS+=	-rpath $(shell pkg-config --variable=prefix mpfr)
+LDFLAGS+=	-Wl,-rpath,$(shell pkg-config --variable=prefix mpfr)
 endif
 
 LDFLAGS+=	-lm

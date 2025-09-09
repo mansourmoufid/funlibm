@@ -18,14 +18,14 @@ See the files named `reduce.h` and [`test-reduce.txt`](test-reduce.txt).
 
 # Requirements
 
- - [clang];
+ - [clang] or [GCC];
  - [GNU Make];
  - [GNU MPFR];
  - [pkg-config];
 
 To install the requirements on Ubuntu:
 
-    sudo apt install clang libmpfr-dev make pkg-config
+    sudo apt install clang gcc libmpfr-dev make pkg-config
 
 
 # Build
@@ -54,6 +54,7 @@ To build and test the argument reduction algorithm:
 
 
 [clang]: https://clang.llvm.org/
+[GCC]: https://gcc.gnu.org/
 [GNU Make]: https://www.gnu.org/software/make/
 [GNU MPFR]: https://www.mpfr.org/
 [pkg-config]: https://www.freedesktop.org/wiki/Software/pkg-config/
