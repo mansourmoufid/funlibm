@@ -77,18 +77,19 @@ test_q_and_r_float(rem_result_float (*rem_function)(float), mpfr_t mp_divisor)
             error = fabsf(r - mp_r_float);
             if (error >= 3.0f * ulp(mp_r_float)) {
                 fprintf(stderr, "%*sx = %+.12f\n", indent, "", x);
+                int N = significant_digits(mp_r_float);
                 fprintf(
                     stderr,
-                    "%*sremainder of %+.12f ÷ %+.12f = %+.12f\n",
+                    "%*sremainder of %+.12f ÷ %+.12f = %+.*f\n",
                     indent, "",
                     mpfr_get_flt(mp_x, MPFR_RNDN),
                     mpfr_get_flt(mp_divisor, MPFR_RNDN),
-                    mpfr_get_flt(mp_r, MPFR_RNDN)
+                    N, mp_r_float
                 );
-                fprintf(stderr, "%*s    expected r = %+.12f\n", indent, "", mp_r_float);
-                fprintf(stderr, "%*s         got r = %+.12f\n", indent, "", r);
-                fprintf(stderr, "%*s         error = %+.12f\n", indent, "", error);
-                fprintf(stderr, "%*s        ulp(r) = %+.12f\n", indent, "", ulp(mp_r_float));
+                fprintf(stderr, "%*s    expected r = %+.*f\n", indent, "", N, mp_r_float);
+                fprintf(stderr, "%*s         got r = %+.*f\n", indent, "", N, r);
+                fprintf(stderr, "%*s         error = %+.*f\n", indent, "", N, error);
+                fprintf(stderr, "%*s        ulp(r) = %+.*f\n", indent, "", N, ulp(mp_r_float));
             }
             // assert(fabsf(r - mp_r_float) <= ulp(mp_r_float));
             if (error > max_abs_error)
@@ -191,18 +192,19 @@ test_q_and_r_double(rem_result_double (*rem_function)(double), mpfr_t mp_divisor
             error = fabs(r - mp_r_double);
             if (error >= 3.0 * ulp(mp_r_double)) {
                 fprintf(stderr, "%*sx = %+.20f\n", indent, "", x);
+                int N = significant_digits(mp_r_double);
                 fprintf(
                     stderr,
-                    "%*sremainder of %+.20f ÷ %+.20f = %+.20f\n",
+                    "%*sremainder of %+.20f ÷ %+.20f = %+.*f\n",
                     indent, "",
                     mpfr_get_d(mp_x, MPFR_RNDN),
                     mpfr_get_d(mp_divisor, MPFR_RNDN),
-                    mpfr_get_d(mp_r, MPFR_RNDN)
+                    N, mp_r_double
                 );
-                fprintf(stderr, "%*s    expected r = %+.20f\n", indent, "", mp_r_double);
-                fprintf(stderr, "%*s         got r = %+.20f\n", indent, "", r);
-                fprintf(stderr, "%*s         error = %+.20f\n", indent, "", error);
-                fprintf(stderr, "%*s        ulp(r) = %+.20f\n", indent, "", ulp(mp_r_double));
+                fprintf(stderr, "%*s    expected r = %+.*f\n", indent, "", N, mp_r_double);
+                fprintf(stderr, "%*s         got r = %+.*f\n", indent, "", N, r);
+                fprintf(stderr, "%*s         error = %+.*f\n", indent, "", N, error);
+                fprintf(stderr, "%*s        ulp(r) = %+.*f\n", indent, "", N, ulp(mp_r_double));
             }
             // assert(fabs(r - mp_r_double) <= ulp(mp_r_double));
             if (error > max_abs_error)

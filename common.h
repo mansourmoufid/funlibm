@@ -29,6 +29,26 @@ ulp_double(double x)
         double: ulp_double \
     )(x)
 
+static inline int
+significant_digits_float(float x)
+{
+    // at least 2 significant digits of the ulp
+    return 2 - (int) log10f(ulp(x));
+}
+
+static inline int
+significant_digits_double(double x)
+{
+    // at least 2 significant digits of the ulp
+    return 2 - (int) log10(ulp(x));
+}
+
+#define significant_digits(x) \
+    _Generic((x), \
+        float: significant_digits_float, \
+        double: significant_digits_double \
+    )(x)
+
 static long int
 xtime(void)
 {
