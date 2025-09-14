@@ -63,8 +63,9 @@ LDFLAGS+=	-lm
 %.o: %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -O2 -c $< -o $@
 
+cw.h: arithmetic.h constants.h types.h
 reduce.h: arithmetic.h constants.h types.h
-reduce.c: reduce.h types.h
+reduce.c: cw.h reduce.h types.h
 test-reduce.c: common.h reduce.h types.h
 
 test-reduce: test-reduce.c reduce.o

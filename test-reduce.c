@@ -260,6 +260,8 @@ main(int argc, char *argv[])
         rem_result_float (*rem_pi)(float) = NULL;
         if (argc == 2 && strcmp(argv[1], "naive") == 0)
             rem_pi = &naive_rem_pi_float;
+        else if (argc == 2 && strcmp(argv[1], "cw") == 0)
+            rem_pi = &cw_rem_pi_float;
         else
             rem_pi = &bdl_rem_pi_float;
         assert(rem_pi != NULL);
@@ -272,6 +274,8 @@ main(int argc, char *argv[])
         rem_result_double (*rem_pi)(double) = NULL;
         if (argc == 2 && strcmp(argv[1], "naive") == 0)
             rem_pi = &naive_rem_pi_double;
+        else if (argc == 2 && strcmp(argv[1], "cw") == 0)
+            rem_pi = &cw_rem_pi_double;
         else
             rem_pi = &bdl_rem_pi_double;
         assert(rem_pi != NULL);
@@ -289,6 +293,8 @@ main(int argc, char *argv[])
         rem_result_float (*rem_2pi)(float) = NULL;
         if (argc == 2 && strcmp(argv[1], "naive") == 0)
             rem_2pi = &naive_rem_2pi_float;
+        else if (argc == 2 && strcmp(argv[1], "cw") == 0)
+            rem_2pi = &cw_rem_2pi_float;
         else
             rem_2pi = &bdl_rem_2pi_float;
         assert(rem_2pi != NULL);
@@ -301,6 +307,8 @@ main(int argc, char *argv[])
         rem_result_double (*rem_2pi)(double) = NULL;
         if (argc == 2 && strcmp(argv[1], "naive") == 0)
             rem_2pi = &naive_rem_2pi_double;
+        else if (argc == 2 && strcmp(argv[1], "cw") == 0)
+            rem_2pi = &cw_rem_2pi_double;
         else
             rem_2pi = &bdl_rem_2pi_double;
         assert(rem_2pi != NULL);
@@ -318,6 +326,8 @@ main(int argc, char *argv[])
         rem_result_float (*rem_pi_2)(float) = NULL;
         if (argc == 2 && strcmp(argv[1], "naive") == 0)
             rem_pi_2 = &naive_rem_pi_2_float;
+        else if (argc == 2 && strcmp(argv[1], "cw") == 0)
+            rem_pi_2 = &cw_rem_pi_2_float;
         else
             rem_pi_2 = &bdl_rem_pi_2_float;
         assert(rem_pi_2 != NULL);
@@ -330,6 +340,8 @@ main(int argc, char *argv[])
         rem_result_double (*rem_pi_2)(double) = NULL;
         if (argc == 2 && strcmp(argv[1], "naive") == 0)
             rem_pi_2 = &naive_rem_pi_2_double;
+        else if (argc == 2 && strcmp(argv[1], "cw") == 0)
+            rem_pi_2 = &cw_rem_pi_2_double;
         else
             rem_pi_2 = &bdl_rem_pi_2_double;
         assert(rem_pi_2 != NULL);

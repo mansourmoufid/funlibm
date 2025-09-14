@@ -11,9 +11,11 @@ See the file named `arithmetic.h`.
 
 ## Argument reduction
 
-Implements the Boldo-Daumas-Li exact argument reduction algorithm.[^3]
+Implements the Cody-Waite argument reduction algorithm.[^3]
+See the files named `cw.h` and [`test-reduce-cw.txt`](test-reduce-cw.txt).
 
-See the files named `reduce.h` and [`test-reduce.txt`](test-reduce.txt).
+Implements the Boldo-Daumas-Li exact argument reduction algorithm.[^4]
+See the files named `reduce.h` and [`test-reduce-bdl.txt`](test-reduce-bdl.txt).
 
 
 # Requirements
@@ -33,7 +35,8 @@ To install the requirements on Ubuntu:
 To build and test the argument reduction algorithm:
 
     make test-reduce
-    ./test-reduce
+    ./test-reduce cw 2>/dev/null | tee test-reduce-cw.txt
+    ./test-reduce bdl 2>/dev/null | tee test-reduce-bdl.txt
 
 
 # References
@@ -47,7 +50,10 @@ To build and test the argument reduction algorithm:
     square root. ACM Trans. Math. Softw. 23, 4 (Dec. 1997), 561–589.
     https://dl.acm.org/doi/pdf/10.1145/279232.279237
 
-[^3]: Sylvie Boldo, Marc Daumas, and Ren-Cang Li. "Formally verified argument
+[^3]: W. J. Cody and W. Waite, Software manual for elementary functions.
+    Prentice Hall, 1980.
+
+[^4]: Sylvie Boldo, Marc Daumas, and Ren-Cang Li. "Formally verified argument
     reduction with a fused multiply-add."
     IEEE Transactions on Computers 58, no. 8 (2008): 1139-1145.
     https://arxiv.org/pdf/0708.3722
