@@ -119,3 +119,31 @@ mul_double(double a, double b)
         float: mul_float, \
         double: mul_double \
     )(a, b)
+
+/*
+ * Return a * b + c.
+ */
+
+static inline tuple_float
+xfma_float(float a, float b, float c)
+{
+    tuple_float p = mul(a, b);
+    tuple_float s1 = add(c, p.a);
+    tuple_float s2  = add(s1.a, p.b);
+    return (tuple_float) {s2.a, s1.b + s2.b};
+}
+
+static inline tuple_double
+xfma_double(double a, double b, double c)
+{
+    tuple_double p = mul(a, b);
+    tuple_double s1 = add(c, p.a);
+    tuple_double s2  = add(s1.a, p.b);
+    return (tuple_double) {s2.a, s1.b + s2.b};
+}
+
+#define xfma(a, b, c) \
+    _Generic((a), \
+        float: xfma_float, \
+        double: xfma_double \
+    )(a, b, c)
