@@ -34,9 +34,11 @@ test_q_and_r_float(rem_result_float (*rem_function)(float), mpfr_t mp_divisor)
         0x1.0p+20f,
         0x1.0p+23f,
     };
-    float max_error_by_magnitude[24] = {0.0f};
+    float max_abs_error_by_magnitude[24] = {0.0f};
+    float max_rel_error_by_magnitude[24] = {0.0f};
     for (size_t j = 0; j < sizeof magnitudes / sizeof magnitudes[0]; j++) {
         float max_abs_error = 0.0f;
+        float max_rel_error = 0.0f;
         for (size_t i = 0; i < n; i++) {
             float x = (drand48() - 0.5) * 2.0f * magnitudes[j];
             mpfr_t mp_x;
@@ -46,7 +48,8 @@ test_q_and_r_float(rem_result_float (*rem_function)(float), mpfr_t mp_divisor)
             rem_result_float rem = (*rem_function)(x);
             int32_t q = rem.z;
             float r = rem.v1 + rem.v2;
-            float error = 0.0f;
+            float abs_error = 0.0f;
+            float rel_error = 0.0f;
 
             // mp_q = trunc(mp_x / mp_divisor)
             mpfr_t mp_q;
@@ -74,8 +77,9 @@ test_q_and_r_float(rem_result_float (*rem_function)(float), mpfr_t mp_divisor)
             mpfr_init2(mp_r, mp_precision);
             mpfr_fmod(mp_r, mp_x, mp_divisor, MPFR_RNDN);
             float mp_r_float = mpfr_get_flt(mp_r, MPFR_RNDN);
-            error = fabsf(r - mp_r_float);
-            if (error >= 3.0f * ulp(mp_r_float)) {
+            abs_error = fabsf(r - mp_r_float);
+            rel_error = abs_error / ulp(mp_r_float);
+            if (rel_error >= 3.0f) {
                 fprintf(stderr, "%*sx = %+.12f\n", indent, "", x);
                 int N = significant_digits(mp_r_float);
                 fprintf(
@@ -88,28 +92,29 @@ test_q_and_r_float(rem_result_float (*rem_function)(float), mpfr_t mp_divisor)
                 );
                 fprintf(stderr, "%*s    expected r = %+.*f\n", indent, "", N, mp_r_float);
                 fprintf(stderr, "%*s         got r = %+.*f\n", indent, "", N, r);
-                fprintf(stderr, "%*s         error = %+.*f\n", indent, "", N, error);
+                fprintf(stderr, "%*s         error = %+.*f\n", indent, "", N, abs_error);
                 fprintf(stderr, "%*s        ulp(r) = %+.*f\n", indent, "", N, ulp(mp_r_float));
             }
-            // assert(fabsf(r - mp_r_float) <= ulp(mp_r_float));
-            if (error > max_abs_error)
-                max_abs_error = error;
+            if (abs_error > max_abs_error)
+                max_abs_error = abs_error;
+            if (rel_error > max_rel_error)
+                max_rel_error = rel_error;
 
             mpfr_clear(mp_r);
             mpfr_clear(mp_q);
             mpfr_clear(mp_x);
 
-            assert(error >= 0.0f);
-            if (error >= 3.0f * ulp(mp_r_float))
+            if (rel_error >= 3.0f)
                 error_dist[3]++;
-            else if (error >= 2.0f * ulp(mp_r_float))
+            else if (rel_error >= 2.0f)
                 error_dist[2]++;
-            else if (error >= ulp(mp_r_float))
+            else if (rel_error >= 1.0f)
                 error_dist[1]++;
             else
                 error_dist[0]++;
         }
-        max_error_by_magnitude[j] = max_abs_error;
+        max_abs_error_by_magnitude[j] = max_abs_error;
+        max_rel_error_by_magnitude[j] = max_rel_error;
     }
     size_t m = n * sizeof magnitudes / sizeof magnitudes[0];
     assert(error_dist[0] + error_dist[1] + error_dist[2] + error_dist[3] == m);
@@ -121,13 +126,25 @@ test_q_and_r_float(rem_result_float (*rem_function)(float), mpfr_t mp_divisor)
     printf("%*s≥3 ulp %zu (%.2f%%)\n", indent, "", error_dist[3], (float) error_dist[3] / m * 100.0f);
     printf("\n");
 
-    printf("%*smaximum absolute error by magnitude:\n", indent, "");
-    printf("%*s%30s  %30s  %30s\n", indent, "", "order of magnitude of x", "error(r)", "ulp(r)");
+    printf("%*smaximum error by magnitude:\n", indent, "");
+    printf(
+        "%*s%30s  %30s  %30s\n",
+        indent, "",
+        "order of magnitude of x",
+        "absolute error",
+        "relative error (ulp)"
+    );
     printf("%*s┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈  ", indent, "");
     printf("┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈  ");
     printf("┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n");
     for (size_t j = 0; j < sizeof magnitudes / sizeof magnitudes[0]; j++) {
-        printf("%*s%30a  %30.12e  %30.12e\n", indent, "", magnitudes[j], max_error_by_magnitude[j], ulp(magnitudes[j]));
+        printf(
+            "%*s%30a  %30.12e  %30.1f\n",
+            indent, "",
+            magnitudes[j],
+            max_abs_error_by_magnitude[j],
+            max_rel_error_by_magnitude[j]
+        );
     }
     printf("\n");
 }
@@ -149,9 +166,11 @@ test_q_and_r_double(rem_result_double (*rem_function)(double), mpfr_t mp_divisor
         0x1.0p+48,
         0x1.0p+52,
     };
-    double max_error_by_magnitude[24] = {0.0};
+    double max_abs_error_by_magnitude[24] = {0.0};
+    double max_rel_error_by_magnitude[24] = {0.0};
     for (size_t j = 0; j < sizeof magnitudes / sizeof magnitudes[0]; j++) {
         double max_abs_error = 0.0;
+        double max_rel_error = 0.0;
         for (size_t i = 0; i < n; i++) {
             double x = (drand48() - 0.5) * 2.0 * magnitudes[j];
             mpfr_t mp_x;
@@ -161,7 +180,8 @@ test_q_and_r_double(rem_result_double (*rem_function)(double), mpfr_t mp_divisor
             rem_result_double rem = (*rem_function)(x);
             int64_t q = rem.z;
             double r = rem.v1 + rem.v2;
-            double error = 0.0;
+            double abs_error = 0.0;
+            double rel_error = 0.0;
 
             // mp_q = trunc(mp_x / mp_divisor)
             mpfr_t mp_q;
@@ -189,8 +209,9 @@ test_q_and_r_double(rem_result_double (*rem_function)(double), mpfr_t mp_divisor
             mpfr_init2(mp_r, mp_precision);
             mpfr_fmod(mp_r, mp_x, mp_divisor, MPFR_RNDN);
             double mp_r_double = mpfr_get_d(mp_r, MPFR_RNDN);
-            error = fabs(r - mp_r_double);
-            if (error >= 3.0 * ulp(mp_r_double)) {
+            abs_error = fabs(r - mp_r_double);
+            rel_error = abs_error / ulp(mp_r_double);
+            if (rel_error >= 3.0) {
                 fprintf(stderr, "%*sx = %+.20f\n", indent, "", x);
                 int N = significant_digits(mp_r_double);
                 fprintf(
@@ -203,28 +224,30 @@ test_q_and_r_double(rem_result_double (*rem_function)(double), mpfr_t mp_divisor
                 );
                 fprintf(stderr, "%*s    expected r = %+.*f\n", indent, "", N, mp_r_double);
                 fprintf(stderr, "%*s         got r = %+.*f\n", indent, "", N, r);
-                fprintf(stderr, "%*s         error = %+.*f\n", indent, "", N, error);
+                fprintf(stderr, "%*s         error = %+.*f\n", indent, "", N, abs_error);
                 fprintf(stderr, "%*s        ulp(r) = %+.*f\n", indent, "", N, ulp(mp_r_double));
             }
             // assert(fabs(r - mp_r_double) <= ulp(mp_r_double));
-            if (error > max_abs_error)
-                max_abs_error = error;
+            if (abs_error > max_abs_error)
+                max_abs_error = abs_error;
+            if (rel_error > max_rel_error)
+                max_rel_error = rel_error;
 
             mpfr_clear(mp_r);
             mpfr_clear(mp_q);
             mpfr_clear(mp_x);
 
-            assert(error >= 0.0);
-            if (error >= 3.0 * ulp(mp_r_double))
+            if (rel_error >= 3.0)
                 error_dist[3]++;
-            else if (error >= 2.0 * ulp(mp_r_double))
+            else if (rel_error >= 2.0)
                 error_dist[2]++;
-            else if (error >= ulp(mp_r_double))
+            else if (rel_error >= 1.0)
                 error_dist[1]++;
             else
                 error_dist[0]++;
         }
-        max_error_by_magnitude[j] = max_abs_error;
+        max_abs_error_by_magnitude[j] = max_abs_error;
+        max_rel_error_by_magnitude[j] = max_rel_error;
     }
     size_t m = n * sizeof magnitudes / sizeof magnitudes[0];
     assert(error_dist[0] + error_dist[1] + error_dist[2] + error_dist[3] == m);
@@ -236,13 +259,25 @@ test_q_and_r_double(rem_result_double (*rem_function)(double), mpfr_t mp_divisor
     printf("%*s≥3 ulp %zu (%.2f%%)\n", indent, "", error_dist[3], (double) error_dist[3] / m * 100.0);
     printf("\n");
 
-    printf("%*smaximum absolute error by magnitude:\n", indent, "");
-    printf("%*s%30s  %30s  %30s\n", indent, "", "order of magnitude of x", "error(r)", "ulp(r)");
+    printf("%*smaximum error by magnitude:\n", indent, "");
+    printf(
+        "%*s%30s  %30s  %30s\n",
+        indent, "",
+        "order of magnitude of x",
+        "absolute error",
+        "relative error (ulp)"
+    );
     printf("%*s┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈  ", indent, "");
     printf("┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈  ");
     printf("┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n");
     for (size_t j = 0; j < sizeof magnitudes / sizeof magnitudes[0]; j++) {
-        printf("%*s%30a  %30.18e  %30.18e\n", indent, "", magnitudes[j], max_error_by_magnitude[j], ulp(magnitudes[j]));
+        printf(
+            "%*s%30a  %30.18e  %30.1f\n",
+            indent, "",
+            magnitudes[j],
+            max_abs_error_by_magnitude[j],
+            max_rel_error_by_magnitude[j]
+        );
     }
     printf("\n");
 }
