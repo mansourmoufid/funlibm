@@ -125,6 +125,8 @@ mul_double(double a, double b)
  */
 
 static inline tuple_float
+__attribute__((always_inline))
+__attribute__((const))
 xfma_float(float a, float b, float c)
 {
     tuple_float p = mul(a, b);
@@ -134,6 +136,8 @@ xfma_float(float a, float b, float c)
 }
 
 static inline tuple_double
+__attribute__((always_inline))
+__attribute__((const))
 xfma_double(double a, double b, double c)
 {
     tuple_double p = mul(a, b);
