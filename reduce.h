@@ -551,6 +551,13 @@ rem_result_double naive_rem_pi_2_double(double x);
         double: naive_rem_pi_2_double \
     )(x)
 
+rem_result_float cw_rem_pi_float(float x);
+rem_result_float cw_rem_2pi_float(float x);
+rem_result_float cw_rem_pi_2_float(float x);
+rem_result_double cw_rem_pi_double(double x);
+rem_result_double cw_rem_2pi_double(double x);
+rem_result_double cw_rem_pi_2_double(double x);
+
 rem_result_float bdl_rem_pi_float(float x);
 rem_result_float bdl_rem_2pi_float(float x);
 rem_result_float bdl_rem_pi_2_float(float x);

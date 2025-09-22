@@ -4,6 +4,7 @@
 
 #include "types.h" // rem_result_float, rem_result_double
 
+#include "cw.h"
 #include "reduce.h"
 
 /*
@@ -20,6 +21,18 @@ rem_result_double
 naive_rem_pi_double(double x)
 {
     return _naive_rem_pi(x);
+}
+
+rem_result_float
+cw_rem_pi_float(float x)
+{
+    return _cw_rem_pi_float(x);
+}
+
+rem_result_double
+cw_rem_pi_double(double x)
+{
+    return _cw_rem_pi_double(x);
 }
 
 rem_result_float
@@ -51,6 +64,18 @@ naive_rem_2pi_double(double x)
 }
 
 rem_result_float
+cw_rem_2pi_float(float x)
+{
+    return _cw_rem_2pi_float(x);
+}
+
+rem_result_double
+cw_rem_2pi_double(double x)
+{
+    return _cw_rem_2pi_double(x);
+}
+
+rem_result_float
 bdl_rem_2pi_float(float x)
 {
     return _bdl_rem_2pi(x);
@@ -76,6 +101,18 @@ rem_result_double
 naive_rem_pi_2_double(double x)
 {
     return _naive_rem_pi_2(x);
+}
+
+rem_result_float
+cw_rem_pi_2_float(float x)
+{
+    return _cw_rem_pi_2_float(x);
+}
+
+rem_result_double
+cw_rem_pi_2_double(double x)
+{
+    return _cw_rem_pi_2_double(x);
 }
 
 rem_result_float
