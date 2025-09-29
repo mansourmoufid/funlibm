@@ -20,34 +20,8 @@
  *     https://dl.acm.org/doi/pdf/10.1145/279232.279237
  */
 
-static inline float
-__attribute__((always_inline))
-__attribute__((const))
-xfabs_float(float x)
-{
-    if (x < 0)
-        return -x;
-    return x;
-}
-
-static inline double
-__attribute__((always_inline))
-__attribute__((const))
-xfabs_double(double x)
-{
-    if (x < 0)
-        return -x;
-    return x;
-}
-
-#define xfabs(x) \
-    _Generic((x), \
-        float: xfabs_float, \
-        double: xfabs_double \
-    )(x)
-
 /*
- * Return the sum and its error. See TwoSum_d, page 179. [1]
+ * Return the sum and its error. See TwoSum_k, page 178. [1]
  */
 
 static inline tuple_float
@@ -55,16 +29,8 @@ __attribute__((always_inline))
 __attribute__((const))
 add_float(float a, float b)
 {
-    // TwoSum_d requires |a| ≤ |b|.
-    if (xfabs(a) > xfabs(b)) { // fabs not vectorizable
-        float c = a;
-        a = b;
-        b = c;
-    }
-    assert(xfabs(a) <= xfabs(b));
     float x = a + b;
-    float y = x - b;
-    float e = a - y;
+    float e = (a - (x - b)) + (b - (x - (x - b)));
     return (tuple_float) {x, e};
 }
 
@@ -73,16 +39,8 @@ __attribute__((always_inline))
 __attribute__((const))
 add_double(double a, double b)
 {
-    // TwoSum_d requires |a| ≤ |b|.
-    if (xfabs(a) > xfabs(b)) { // fabs not vectorizable
-        double c = a;
-        a = b;
-        b = c;
-    }
-    assert(xfabs(a) <= xfabs(b));
     double x = a + b;
-    double y = x - b;
-    double e = a - y;
+    double e = (a - (x - b)) + (b - (x - (x - b)));
     return (tuple_double) {x, e};
 }
 
