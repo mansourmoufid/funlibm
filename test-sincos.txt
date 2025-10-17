@@ -1,0 +1,33 @@
+testing float sin ...
+
+    error distribution:
+     0 ulp 10000000 (100.00%)
+     1 ulp 0 (0.00%)
+     2 ulp 0 (0.00%)
+    ≥3 ulp 0 (0.00%)
+
+testing float cos ...
+
+    error distribution:
+     0 ulp 9999998 (100.00%)
+     1 ulp 0 (0.00%)
+     2 ulp 0 (0.00%)
+    ≥3 ulp 2 (0.00%)
+
+testing double sin ...
+
+    error distribution:
+     0 ulp 10000000 (100.00%)
+     1 ulp 0 (0.00%)
+     2 ulp 0 (0.00%)
+    ≥3 ulp 0 (0.00%)
+
+testing double cos ...
+
+    error distribution:
+     0 ulp 10000000 (100.00%)
+     1 ulp 0 (0.00%)
+     2 ulp 0 (0.00%)
+    ≥3 ulp 0 (0.00%)
+
+
