@@ -68,12 +68,20 @@ reduce.h: arithmetic.h constants.h types.h
 reduce.c: cw.h reduce.h types.h
 test-reduce.c: common.h reduce.h types.h
 
+sincos.c: constants.h polynomial.h reduce.h sincos.h types.h
+test-sincos.c: common.h sincos.h types.h
+
 test-reduce: test-reduce.c reduce.o
 	$(CC) $(CPPFLAGS) -UNDEBUG $(CFLAGS) -O0 -c test-reduce.c -o test-reduce.o
 	$(LD) reduce.o test-reduce.o -o test-reduce $(LDFLAGS)
+
+test-sincos: test-sincos.c sincos.o
+	$(CC) $(CPPFLAGS) -UNDEBUG $(CFLAGS) -O0 -c test-sincos.c -o test-sincos.o
+	$(LD) sincos.o test-sincos.o -o test-sincos $(LDFLAGS)
 
 .PHONY: clean
 clean:
 	rm -f *.s
 	rm -f *.o
 	rm -f test-reduce
+	rm -f test-sincos

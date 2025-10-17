@@ -18,6 +18,21 @@ Implements the Boldo-Daumas-Li exact argument reduction algorithm.[^4]
 See the files named `reduce.h` and [`test-reduce-bdl.txt`](test-reduce-bdl.txt).
 
 
+## Polynomial evaluation
+
+Implements the Graillat–Langlois–Louvet error-free polynomial evaluation
+algorithm.[^5]
+See the file `polynomial.h`.
+
+
+## Transcendental functions
+
+### Sine and cosine
+
+See the files `sin.h`, `cos.h`, `sincos.c`, and
+[`test-sincos.txt`](test-sincos.txt).
+
+
 # Requirements
 
  - [clang] or [GCC];
@@ -58,6 +73,10 @@ To build and test the argument reduction algorithm:
     IEEE Transactions on Computers 58, no. 8 (2008): 1139-1145.
     https://arxiv.org/pdf/0708.3722
 
+[^5]: S. Graillat, P. Langlois, and N. Louvet. Algorithms for accurate,
+    validated and fast computations with polynomials.
+    Japan Journal of Industrial and Applied Mathematics,
+    Special issue on Verified Numerical Computation, 2009.
 
 [clang]: https://clang.llvm.org/
 [GCC]: https://gcc.gnu.org/
